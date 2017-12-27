@@ -8,6 +8,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
 
   const TodoApp = db.db('TodoApp');
 
+  // // Find _id, set completed = true
   // TodoApp.collection('Todos').findOneAndUpdate({
   //   _id: new ObjectID("5a3061377d17b282fb6959cb")
   // }, {
@@ -20,6 +21,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, db) => {
   //   console.log(result);
   // });
 
+  // Find name, age += 1
   TodoApp.collection('Users').findOneAndUpdate({
     name: 'Steve'
   }, {
