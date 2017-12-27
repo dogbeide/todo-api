@@ -46,3 +46,5 @@ app.listen(8000, () => {
 // });
 //
 // saveDoc(user1);
+
+module.exports = {app};
