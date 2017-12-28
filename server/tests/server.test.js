@@ -1,13 +1,16 @@
 // const expect = require('expect');
 const request = require('supertest');
 const {expect} = require('chai');
+const {ObjectID} = require('mongodb');
 
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 
 const dummies = [{
+  _id: new ObjectID(),
   text: 'Testing 1'
 }, {
+  _id: new ObjectID(),
   text: 'Testing 2'
 }];
 
@@ -62,11 +65,12 @@ describe('POST /todos', () => {
         })
         .catch((e) => done(e));
       });
-
   });
+
 });
 
 describe('GET /todos', () => {
+
   it('should get all todos', (done) => {
     request(app)
       .get('/todos')
@@ -76,4 +80,42 @@ describe('GET /todos', () => {
       })
       .end(done);
   });
+
+});
+
+describe('GET /todos/:id', () => {
+
+  it('should return todo doc', (done) => {
+    request(app)
+      .get(`/todos/${dummies[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).to.equal(dummies[0].text);
+      })
+      .end(done);
+  });
+
+
+  it('should return 404 if todo not found', (done) => {
+    var hex12byteID = 'a3a4a5a6a7a8a9a0a9a8a7a6'
+
+    request(app)
+      .get(`/todos/${hex12byteID}`)
+      .expect(404)
+      .expect((res) => {
+        expect(res.body.todos).to.be.an('undefined');
+      })
+      .end(done);
+  });
+
+  it('should return 404 for invalid ObjectID', (done) => {
+    request(app)
+      .get('/todos/asdf')
+      .expect(404)
+      .expect((res) => {
+        expect(res.body.todos).to.be.an('undefined');
+      })
+      .end(done);
+  });
+
 });
