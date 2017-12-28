@@ -4,6 +4,26 @@ const {mongoose} = require('./../server/db/mongoose');
 const {Todo} = require('./../server/models/todo');
 const {User} = require('./../server/models/user');
 
+// var newTodo = new Todo({
+//   text: 'Go to bed'
+// });
+//
+// saveDoc(newTodo);
+//
+// var newTodo2 = new Todo({
+//   text: 'Sleep tho',
+//   completed: true,
+//   completedAt: 9999
+// });
+//
+// saveDoc(newTodo2);
+
+// user1 = new User({
+//   email: 'testdev@gmail.com'
+// });
+//
+// saveDoc(user1);
+
 // var id = '5a4341a7210bf7421b916f3b11';
 //
 // if (!ObjectID.isValid(id)) {
