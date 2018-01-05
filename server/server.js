@@ -8,6 +8,7 @@ const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
 
 var app = express();
+const port = process.env.PORT || 8000
 
 app.use(bodyParser.json());
 
@@ -58,8 +59,8 @@ app.post('/todos', (req, res) => {
 });
 
 // listen on port forever
-app.listen(8000, () => {
-  console.log('Started on port 8000');
+app.listen(port, () => {
+  console.log(`Started on port ${port}`);
 });
 
 
