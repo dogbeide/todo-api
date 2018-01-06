@@ -21,6 +21,23 @@ app.get('/todos', (req, res) => {
   });
 });
 
+
+// create a new todo
+app.post('/todos', (req, res) => {
+  var todo = new Todo({
+    text: req.body.text
+  });
+
+  todo.save().then((doc) => {
+    // return if saved
+    res.send(doc);
+  }, (e) => {
+    // return error if fail
+    res.status(400).send(e);
+  });
+
+});
+
 // GET /todos/<id>
 app.get('/todos/:id', (req, res) => {
   var id = req.params.id;
@@ -42,18 +59,24 @@ app.get('/todos/:id', (req, res) => {
 
 });
 
-// create a new todo
-app.post('/todos', (req, res) => {
-  var todo = new Todo({
-    text: req.body.text
-  });
 
-  todo.save().then((doc) => {
-    // return if saved
-    res.send(doc);
-  }, (e) => {
-    // return error if fail
-    res.status(400).send(e);
+// DELETE /todos/<id>
+app.delete('/todos/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  Todo.findByIdAndRemove(id).then((todo) => {
+    if (todo) {
+      res.status(200).send(todo);
+    }
+    else {
+      res.status(404).send();
+    }
+  }).catch((e) => {
+    res.status(400).send();
   });
 
 });
