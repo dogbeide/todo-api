@@ -109,8 +109,56 @@ describe('GET /todos/:id', () => {
   });
 
   it('should return 404 for invalid ObjectID', (done) => {
+    var hexInvalID = 'asdf';
+
     request(app)
-      .get('/todos/asdf')
+      .get(`/todos/${hexInvalID}`)
+      .expect(404)
+      .expect((res) => {
+        expect(res.body.todos).to.be.an('undefined');
+      })
+      .end(done);
+  });
+
+});
+
+describe('DELETE /todos/:id', () => {
+
+  it('should remove a todo', (done) => {
+    var hex12byteID = dummies[1]._id.toHexString();
+
+    request(app)
+      .delete(`/todos/${hex12byteID}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo._id).to.equal(hex12byteID);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        // query database using findById, should fail (toNotExist)
+        Todo.findById(hex12byteID).then((todo) => {
+          expect(todo).to.not.exist;
+          done();
+        }).catch((e) => done(e));
+      });
+  });
+
+  it('should return 404 if todo not found', (done) => {
+    var hex12byteID = new ObjectID().toHexString;
+
+    request(app)
+      .delete(`/todos/${hex12byteID}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 if ObjectID is invalid', (done) => {
+    var hexInvalID = 'asdf';
+
+    request(app)
+      .delete(`/todos/${hexInvalID}`)
       .expect(404)
       .expect((res) => {
         expect(res.body.todos).to.be.an('undefined');
