@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoApp');
+mongoose.connect(process.env.MONGODB_URI);
 
 module.exports = {
   mongoose,
   saveDoc
 }
+
+// process.env.NODE_ENV === 'production' // by default on heroku
+// process.env.NODE_ENV === 'development' // for locally
+// process.env.NODE_ENV === 'test' // for testing
 
 function saveDoc(obj) {
   obj.save().then((doc) => {
