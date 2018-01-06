@@ -11,7 +11,9 @@ const dummies = [{
   text: 'Testing 1'
 }, {
   _id: new ObjectID(),
-  text: 'Testing 2'
+  text: 'Testing 2',
+  completed: true,
+  completedAt: 9999
 }];
 
 beforeEach((done) => {
@@ -85,7 +87,7 @@ describe('GET /todos', () => {
 
 describe('GET /todos/:id', () => {
 
-  it('should return todo doc', (done) => {
+  it('should return a todo', (done) => {
     request(app)
       .get(`/todos/${dummies[0]._id.toHexString()}`)
       .expect(200)
@@ -108,7 +110,7 @@ describe('GET /todos/:id', () => {
       .end(done);
   });
 
-  it('should return 404 for invalid ObjectID', (done) => {
+  it('should return 404 if ObjectID is invalid', (done) => {
     var hexInvalID = 'asdf';
 
     request(app)
@@ -162,6 +164,50 @@ describe('DELETE /todos/:id', () => {
       .expect(404)
       .expect((res) => {
         expect(res.body.todos).to.be.an('undefined');
+      })
+      .end(done);
+  });
+
+});
+
+describe('PATCH /todos/:id', () => {
+
+  it('should update a todo', (done) => {
+    var hexId = dummies[0]._id.toHexString();
+    var newText = "new text"
+
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .send({
+        text: newText,
+        completed: true
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo).to.exist;
+        expect(res.body.todo.text).to.equal(newText);
+        expect(res.body.todo.completed).to.equal(true);
+        expect(res.body.todo.completedAt).to.be.a('number');
+      })
+      .end(done);
+  });
+
+  it('should clear completedAt when todo is not completed', (done) => {
+    var hexId = dummies[1]._id.toHexString();
+    var newText = 'new text';
+
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .send({
+        text: newText,
+        completed: false
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo).to.exist;
+        expect(res.body.todo.text).to.equal(newText);
+        expect(res.body.todo.completed).to.equal(false);
+        expect(res.body.todo.completedAt).to.not.exist;
       })
       .end(done);
   });
