@@ -41,6 +41,23 @@ app.post('/todos', (req, res) => {
 
 });
 
+// create a new user
+app.post('/users', (req, res) => {
+  // var body = _.pick(req.body, ['email', 'password']);
+  // var user = new User(body);
+  var user = new User(
+    _.pick(req.body, ['email', 'password'])
+  );
+
+  user.save().then(() => {
+    return user.generateAuthToken();
+  }).then((token) => {
+    res.header('x-auth', token).send(user);
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
+
 // GET /todos/<id>
 app.get('/todos/:id', (req, res) => {
   var id = req.params.id;
@@ -113,6 +130,8 @@ app.patch('/todos/:id', (req, res) => {
   });
 
 });
+
+// POST /users
 
 // listen on port forever
 app.listen(port, () => {
