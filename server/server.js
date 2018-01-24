@@ -73,7 +73,13 @@ app.post('/users/login', (req, res) => {
 
 });
 
-
+app.delete('/users/me/token', authenticate, (req, res) => {
+  req.user.removeToken(req.token).then(() => {
+    res.status(200).send("Successfully logged out");
+  }).catch((e) => {
+    res.status(400).send("Error logging out");
+  });
+});
 
 // return self profile
 app.get('/users/me', authenticate, (req, res) => {
