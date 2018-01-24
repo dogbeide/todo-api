@@ -60,6 +60,20 @@ app.post('/users', (req, res) => {
 });
 
 
+// POST /users/login {email, password}
+app.post('/users/login', (req, res) => {
+
+  User.findByCredentials(req.body.email, req.body.password).then((user) => {
+    return user.generateAuthToken().then((token) => {
+      res.header('x-auth', token).send(user);
+    });
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+
+});
+
+
 
 // return self profile
 app.get('/users/me', authenticate, (req, res) => {
@@ -139,7 +153,6 @@ app.patch('/todos/:id', (req, res) => {
 
 });
 
-// POST /users
 
 // listen on port forever
 app.listen(port, () => {

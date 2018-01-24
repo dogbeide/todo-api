@@ -275,7 +275,7 @@ describe('POST /users', () => {
         }
 
         User.findOne({email}).then((user) => {
-          expect(user).to.deep.equal({});
+          expect(user).to.be.empty;
           done();
         }).catch((e) => {
           expect(e).to.not.equal(undefined);
