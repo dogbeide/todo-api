@@ -360,3 +360,26 @@ describe('POST /users/login', () => {
   });
 
 });
+
+describe('DELETE /users/me/token', () => {
+
+  it('should logout user by removing auth token', (done) => {
+
+    request(app)
+      .delete('/users/me/token')
+      .set('x-auth', users[0].tokens[0].token)
+      .send()
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        User.findById(users[0]._id).then((user) => {
+          expect(user.tokens).to.be.empty;
+          done();
+        }).catch((e) => done(e));
+      });
+  });
+
+});
